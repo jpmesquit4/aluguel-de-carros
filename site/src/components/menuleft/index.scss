@@ -1,0 +1,59 @@
+.menu-left {
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+    background-color: black;
+    height: 100vh auto;
+
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
+        
+        
+
+        h1 {
+            font-family: 'Yaldevi';
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+
+            span {
+                color: orangered;
+            }
+        }
+
+        margin-bottom: 150px;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        
+
+        .section {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 30px 40px;
+            gap: 20px;
+            height: 50px;
+
+            background-color: black;
+            transition: 0.5s;
+
+            p {
+                color: white;
+                font-family: 'inter';
+            }
+        }
+
+        .section:hover {
+            cursor: pointer;
+            background-color: #8837C7;
+            
+        }
+    }
+}
