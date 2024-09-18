@@ -17,3 +17,9 @@ export function validarCliente(clienteObj) {
     throw new Error("CNH do cliente obrigatório!");
 
 }
+
+export function validarClienteIgual(registros) {
+  if (registros.length > 0)
+    throw new Error("Já existe esse cliente!");
+  
+}

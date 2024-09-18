@@ -1,6 +1,7 @@
 import alterarInfoClienteService from "../service/cliente/alterarInfoClienteService.js";
 import deletarClienteService from "../service/cliente/deletarClienteService.js";
 import inserirClienteService from "../service/cliente/inserirClienteService.js";
+import listarClientePorIdService from "../service/cliente/listarClientePorIdService.js";
 import listarClientePorNomeService from "../service/cliente/listarClientePorNomeService.js";
 import listarClienteService from "../service/cliente/listarClienteService.js";
 
@@ -50,6 +51,24 @@ endpoints.get('/cliente/buscar', async (req, resp) => {
     let nome = req.query.nome;
 
     let x = await listarClientePorNomeService(nome);
+
+    resp.status(200).send(x);
+
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+
+})
+
+endpoints.get('/cliente/buscar/:id', async (req, resp) => {
+
+  try {
+
+    let id = req.params.id;
+
+    let x = await listarClientePorIdService(id);
 
     resp.status(200).send(x);
 

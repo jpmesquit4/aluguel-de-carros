@@ -12,9 +12,6 @@ export function validarLocacao(locacaoObj) {
   if (!locacaoObj.kmRetirada)
     throw new Error("Quilometragem do veiculo da retirada obrigatório!");
   
-  if (!locacaoObj.seguro)
-    throw new Error("Estado do seguro obrigatório!");
-  
   if (!locacaoObj.observacoes)
     throw new Error("Observações obrigatório!");
 

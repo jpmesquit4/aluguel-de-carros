@@ -5,6 +5,9 @@ import listarVeiculosPorModeloService from "../service/veiculo/listarVeiculoPorM
 import listarVeiculosPorMarcaService from "../service/veiculo/listarVeiculoPorMarcaService.js";
 import listarVeiculosPorPlacaService from "../service/veiculo/listarVeiculoPorPlacaService.js";
 import alterarInfoVeiculoService from "../service/veiculo/alterarInfoVeiculoService.js";
+import listarTipoAndIdTipoService from "../service/veiculo/listarTipoAndIdTipoService.js";
+import deletarVeiculoService from "../service/veiculo/deletarVeiculoService.js";
+import buscarCarrosFiltradoService from "../service/veiculo/buscarCarrosFiltradoService.js";
 
 const endpoints = Router();
 
@@ -34,6 +37,21 @@ endpoints.get('/veiculo', async (req, resp) => {
   try {
 
     let x = await listarVeiculosService();
+    resp.send(x);
+
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+
+})
+
+endpoints.get('/veiculo/tipo', async (req, resp) => {
+
+  try {
+
+    let x = await listarTipoAndIdTipoService();
     resp.send(x);
 
   }
@@ -95,6 +113,19 @@ endpoints.get('/veiculo/placa/buscar', async (req, resp) => {
 
 })
 
+endpoints.get('/veiculo/buscar', async (req, resp) => {
+  try {
+    let filtro = req.query.filtro;
+
+    let veiculos = await buscarCarrosFiltradoService(filtro);
+    resp.send(veiculos);
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+});
+
 endpoints.put('/veiculo/:id', async (req, resp) => {
 
   try {
@@ -103,6 +134,26 @@ endpoints.put('/veiculo/:id', async (req, resp) => {
     let veiculoObj = req.body;
 
     await alterarInfoVeiculoService(veiculoObj, id);
+
+    resp.status(200).send();
+
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+
+})
+
+
+
+endpoints.delete('/veiculo/deletar/:id', async (req, resp) => {
+
+  try {
+    
+    let id = req.params.id;
+
+    await deletarVeiculoService(id);
 
     resp.status(200).send();
 

@@ -1,5 +1,5 @@
 import { inserirCliente } from "../../repository/clienteRepository.js";
-import { validarCliente } from "../../validation/cliente/clienteValidation.js";
+import { validarCliente} from "../../validation/cliente/clienteValidation.js";
 
 export default async function inserirClienteService(clienteObj) {
   validarCliente(clienteObj);

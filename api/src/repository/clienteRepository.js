@@ -15,7 +15,8 @@ export async function inserirCliente(clienteObj) {
 export async function listarCliente() {
   
   let comando = `
-    select 	nm_cliente,
+    select  id_cliente,
+            nm_cliente,
 		        ds_cpf,
             ds_telefone,
             ds_email
@@ -31,7 +32,8 @@ export async function listarCliente() {
 export async function listarClientePorNome(nome) {
   
   let comando = `
-    select 	nm_cliente,
+    select  id_cliente,
+            nm_cliente,
 		        ds_cpf,
             ds_telefone,
             ds_email
@@ -45,6 +47,25 @@ export async function listarClientePorNome(nome) {
 
 }
 
+export async function listarClientePorId(id) {
+  
+  let comando = `
+    select  id_cliente id,
+            nm_cliente nome,
+		        ds_cpf cpf,
+            ds_telefone telefone,
+            ds_email email,
+            ds_cnh cnh
+    from 	  tb_cliente
+    where   id_cliente = ?
+  `
+
+  let resp = await con.query(comando, [id]);
+  let info = resp[0];
+  return info;
+
+}
+
 export async function alterarInfoCliente(clienteObj, id) {
   
   let comando = `
@@ -52,13 +73,14 @@ export async function alterarInfoCliente(clienteObj, id) {
     set 	  nm_cliente = ?,
             ds_cpf = ?,
             ds_telefone = ?,
-            ds_email = ?
+            ds_email = ?,
+            ds_cnh = ?
     where 	id_cliente = ?
   `
 
-  let resp = await con.query(comando, [clienteObj.nome, clienteObj.cpf, clienteObj.telefone, clienteObj.email, id]);
+  let resp = await con.query(comando, [clienteObj.nome, clienteObj.cpf, clienteObj.telefone, clienteObj.email, clienteObj.cnh, id]);
   let linhas = resp[0];
-  let linhasAfetadas = linhas.affectedRows;
+  let linhasAfetadas = linhas.changedRows;
   return linhasAfetadas;
 }
 

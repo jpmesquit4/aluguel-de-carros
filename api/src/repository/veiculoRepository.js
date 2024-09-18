@@ -16,7 +16,8 @@ export async function inserirVeiculo(veiculoObj) {
 export async function listarVeiculos() {
   
   let comando = `
-  select 		  ds_modelo modelo,
+  select      id_veiculo id,
+              ds_modelo modelo,
               ds_marca  marca,
               nr_ano    ano,
               ds_tipo   tipo,
@@ -24,12 +25,23 @@ export async function listarVeiculos() {
   from 		    tb_veiculo
   inner join 	tb_tipo_veiculo
   on 			    tb_veiculo.id_tipo_veiculo = tb_tipo_veiculo.id_tipo_veiculo
+  order by    id_veiculo
   `
 
   let resp = await con.query(comando, []);
   return resp[0];
 
 
+}
+
+export async function listarTipoAndIdTipo() {
+  let comando = `
+  select 		id_tipo_veiculo idTipo,
+			      ds_tipo tipo 
+  from 		  tb_tipo_veiculo`
+  
+  let response = await con.query(comando, []);
+  return response[0];
 }
 
 export async function listarVeiculosPorModelo(modelo) {
@@ -43,10 +55,10 @@ export async function listarVeiculosPorModelo(modelo) {
   from 		    tb_veiculo
   inner join 	tb_tipo_veiculo
   on 			    tb_veiculo.id_tipo_veiculo = tb_tipo_veiculo.id_tipo_veiculo
-  where 		  ds_modelo = ?
+  where 		  ds_modelo like ?
   `
 
-  let resp = await con.query(comando, [modelo]);
+  let resp = await con.query(comando, ['%' + modelo + '%']);
   return resp[0];
 }
 
@@ -61,29 +73,58 @@ export async function listarVeiculosPorMarca(marca) {
   from 		    tb_veiculo
   inner join 	tb_tipo_veiculo
   on 			    tb_veiculo.id_tipo_veiculo = tb_tipo_veiculo.id_tipo_veiculo
-  where 		  ds_marca = ?
+  where 		  ds_marca like ?
   `
 
-  let resp = await con.query(comando, [marca]);
+  let resp = await con.query(comando, ['%' + marca + '%']);
   return resp[0];
 }
 
 export async function listarVeiculosPorPlaca(placa) {
   
   let comando = `
-  select 		  ds_modelo modelo,
+  select      id_veiculo id,
+              ds_modelo modelo,
               ds_marca  marca,
               nr_ano    ano,
               ds_tipo   tipo,
-              ds_placa  placa
+              ds_placa  placa,
+              tb_veiculo.id_tipo_veiculo idTipo
   from 		    tb_veiculo
   inner join 	tb_tipo_veiculo
   on 			    tb_veiculo.id_tipo_veiculo = tb_tipo_veiculo.id_tipo_veiculo
-  where 		  ds_placa = ?
+  where 		  ds_placa like ?
   `
 
-  let resp = await con.query(comando, [placa]);
+  let resp = await con.query(comando, ['%' + placa + '%']);
   return resp[0];
+}
+
+export async function buscarCarros(filtro) {
+  let comando = `
+    select id_veiculo id, 
+           ds_modelo modelo, 
+           ds_marca marca, 
+           nr_ano ano, 
+           ds_tipo tipo, 
+           ds_placa placa, 
+           tb_veiculo.id_tipo_veiculo idTipo
+    from tb_veiculo
+    inner join tb_tipo_veiculo on tb_veiculo.id_tipo_veiculo = tb_tipo_veiculo.id_tipo_veiculo
+    where 1=1
+  `;
+
+  let params = [];
+
+  // Adiciona condições apenas se houver valor em 'filtro'
+  if (filtro) {
+    comando += ` and (ds_marca like ? or ds_modelo like ? or ds_placa like ?) `;
+    filtro = `%${filtro}%`;
+    params.push(filtro, filtro, filtro);
+  }
+
+  let [linhas] = await con.query(comando, params);
+  return linhas;
 }
 
 export async function alterarInfoVeiculo(veiculoObj, id) {
@@ -100,6 +141,18 @@ export async function alterarInfoVeiculo(veiculoObj, id) {
 
   let resp = await con.query(comando, [veiculoObj.idTipo, veiculoObj.modelo, veiculoObj.marca, veiculoObj.ano, veiculoObj.placa, id])
   let info = resp[0];
-  let linhasAfetadas = info.affectedRows;
+  let linhasAfetadas = info.changedRows;
   return linhasAfetadas
+}
+
+export async function deletarVeiculo(id) {
+  
+  let comando = `
+    DELETE FROM tb_veiculo WHERE id_veiculo = ?;
+  `
+
+  let resp = await con.query(comando, [id]);
+  let linhas = resp[0];
+  let linhasAfetadas = linhas.affectedRows;
+  return linhasAfetadas;
 }

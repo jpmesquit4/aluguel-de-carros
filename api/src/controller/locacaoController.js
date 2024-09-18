@@ -7,6 +7,9 @@ import deletarLocacaoService from "../service/locacao/deletarLocacaoService.js";
 import alterarInfoLocacaoService from "../service/locacao/alterarInfoLocacaoService.js";
 import finalizarLocacaoService from "../service/locacao/finalizarLocacaoService.js";
 import listarAllInfoLocacoesService from "../service/locacao/listarAllInfoLocacoesService.js";
+import listarInputNomeCpfService from "../service/locacao/listarInputNomeCpfService.js";
+import listarInputModeloService from "../service/locacao/listarInputModeloService.js";
+import buscarClientesFiltradoService from "../service/locacao/buscarLocacaoFiltradaService.js";
 
 const endpoints = Router();
 
@@ -62,6 +65,40 @@ endpoints.get('/locacao/nome/buscar', async (req, resp) => {
 
 })
 
+endpoints.get('/locacao/input/:nome', async (req, resp) => {
+
+  try {
+
+    let nome = req.params.nome;
+
+    let x = await listarInputNomeCpfService(nome);
+    resp.send(x);
+
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+
+})
+
+endpoints.get('/locacao/input', async (req, resp) => {
+
+  try {
+
+    let modelo = req.query.modelo;
+
+    let x = await listarInputModeloService(modelo);
+    resp.send(x);
+
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+
+})
+
 endpoints.get('/locacao/cpf/buscar', async (req, resp) => {
 
   try {
@@ -78,6 +115,19 @@ endpoints.get('/locacao/cpf/buscar', async (req, resp) => {
   }
 
 })
+
+endpoints.get('/locacao/buscar', async (req, resp) => {
+  try {
+    let filtro = req.query.filtro;
+
+    let veiculos = await buscarClientesFiltradoService(filtro);
+    resp.send(veiculos);
+  }
+  catch (err) {
+    logError(err);
+    resp.status(400).send(criarErro(err));
+  }
+});
 
 endpoints.delete('/locacao/:id', async (req, resp) => {
 
